@@ -1,0 +1,14 @@
+Empieza el juego:
+
+En cada frame se pueden lanzar dos bolas. 
+El puntaje del frame es el de los bolos tirados, además de:
+
+Si se lanza una chuza, se le suma el puntaje de las siguientes dos bolas que se tiren.
+Si se lanza un spare, se la suma el puntaje de la siguiente bola que se tire.
+
+-controlar la cantidad de tiros que van en el frame
+-controlar si el tiro fue strike
+    si fue strike, saber qué frame hizo el tiro y llevar control de los dos tiros siguientes,
+    para actualizar el marcador
+-controlar si el tiro es el segundo y si fue spare
+    si fue spare, saber qué frame hizo el tiro y llevar control del tiro siguiente
