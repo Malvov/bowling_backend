@@ -11,20 +11,20 @@
 
 class Game < ApplicationRecord
     has_many :frames
-    after_create :set_strike_and_spare
+    after_create :initialize_variables
 
-    attr_accessor :strike, :spare
+    attr_accessor :strike, :spare, :frame_counter
 
     def throw_ball(pins)
         frame = current_frame
         prev_frame = previous_frame(frame)
-        prev_frame_bonus = prev_frame.frame_score unless prev_frame.nil?
+        #prev_frame_bonus = prev_frame.frame_score unless prev_frame.nil?
         frame.pins_down(pins)
         
         #debugger
 
-        if @strike && frame.is_over?
-            prev_frame.update(bonus: prev_frame_bonus + frame.frame_score)
+        if @strike && frame.is_over? && @frame_counter < 10 #things get pretty weird in the tenth
+            prev_frame.update(bonus: frame.frame_score)
             @strike = false
         end
 
@@ -32,14 +32,33 @@ class Game < ApplicationRecord
             @strike = true
         end
 
-        if @spare && !@strike
-            prev_frame.update(bonus: pins)
+
+        if @spare && @frame_counter < 10
             @spare = false
+            prev_frame.update(bonus: pins) unless prev_frame.nil?
         end
 
-        if frame.frame_score == 10 && !@strike
+        if (frame.second_roll <= 10 && (frame.first_roll != 0 && frame.second_roll != 0) ) && frame.is_over? && @frame_counter < 10
             @spare = true
         end
+
+
+        @frame_counter = frames.count
+
+        # if @frame_counter == 9
+        #     if @spare
+        #         @ninth_with_spare = true
+        #     elsif @strike
+        #         @ninth_with_strike = true
+        #     end            
+        # end
+
+        # if @frame_counter == 10
+
+        #     if @ninth_with_spare
+        #         prev_frame
+        #     end
+        # end
                 
     end
 
@@ -71,8 +90,9 @@ class Game < ApplicationRecord
         frames.find(current_frame.id).seek([:id, :asc]).previous
     end
 
-    def set_strike_and_spare
-        @spare = false
-        @strike = false
+    def initialize_variables
+        @spare = @strike = false
+        @frame_counter = 0
     end
+
 end
