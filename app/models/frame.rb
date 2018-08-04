@@ -6,29 +6,43 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  is_over     :boolean          default(FALSE)
-#  first_roll  :integer
-#  second_roll :integer
+#  game_id     :bigint(8)
+#  first_roll  :integer          default(0)
+#  second_roll :integer          default(0)
+#  bonus       :integer          default(0)
 #
 
 class Frame < ApplicationRecord
-    include OrderQuery
+    belongs_to :game
+    include OrderQuery #in order to get next and previous frames
     
     attr_accessor :frame_tracker
-
-    def add(pins)
-        if frame_tracker == 0
-            if pins == 10
-                self.is_over = true
+    def pins_down(pins)
+        debugger
+        if frame_tracker.to_i == 0
+            if pins == 10 || frame_tracker.to_i > 2
+                self.toggle(:is_over)
             end
-            self.first_roll =  pins
-        elsif frame_tracker == 1 || !self.is_over?
-            self.second_roll = pins
+            self.update(first_roll: pins)
+        elsif frame_tracker == 1 || 
+            self.update(second_roll: pins)
+            self.toggle(:is_over)
         end
-        @frame_tracker += 1
-    end
 
-    def frame_tracker
-        @frame_tracker || 0
+        @frame_tracker = 1
+        # pins_left = PIN_COUNT - pins
+
+        # if pins_left == 0
+        #     self.toggle(:is_over)
+        #     self.update(first_roll: pins)
+        # elsif pins_left < 10 && !is_over?
+        #     self.update(first_roll: pins)
+        # else
+        # end     
+    end
+    
+    def frame_score
+        first_roll + second_roll + bonus
     end
 
 end

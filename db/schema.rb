@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_03_071712) do
+ActiveRecord::Schema.define(version: 2018_08_03_215958) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,16 +19,19 @@ ActiveRecord::Schema.define(version: 2018_08_03_071712) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_over", default: false
-    t.integer "first_roll"
-    t.integer "second_roll"
+    t.bigint "game_id"
+    t.integer "first_roll", default: 0
+    t.integer "second_roll", default: 0
+    t.integer "bonus", default: 0
+    t.index ["game_id"], name: "index_frames_on_game_id"
   end
 
   create_table "games", force: :cascade do |t|
     t.string "player_name"
     t.integer "final_score", default: 0
-    t.boolean "is_over", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "frames", "games"
 end
