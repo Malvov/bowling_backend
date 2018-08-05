@@ -18,13 +18,12 @@ class Game < ApplicationRecord
     def throw_ball(pins)
         frame = current_frame
         prev_frame = previous_frame(frame)
-        #prev_frame_bonus = prev_frame.frame_score unless prev_frame.nil?
+        prev_frame_bonus = prev_frame.frame_score unless prev_frame.nil?
         frame.pins_down(pins)
         
-        #debugger
 
         if @strike && frame.is_over? && @frame_counter < 10 #things get pretty weird in the tenth
-            prev_frame.update(bonus: frame.frame_score)
+            prev_frame.update(bonus: frame.frame_score + prev_frame_bonus)
             @strike = false
         end
 
@@ -32,16 +31,15 @@ class Game < ApplicationRecord
             @strike = true
         end
 
-
-        if @spare && @frame_counter < 10
+        if @spare && !@strike && @frame_counter < 10
             @spare = false
             prev_frame.update(bonus: pins) unless prev_frame.nil?
         end
 
+
         if (frame.second_roll <= 10 && (frame.first_roll != 0 && frame.second_roll != 0) ) && frame.is_over? && @frame_counter < 10
             @spare = true
         end
-
 
         @frame_counter = frames.count
 
@@ -70,13 +68,7 @@ class Game < ApplicationRecord
         total
     end
 
-    # def strike
-    #     @strike || false
-    # end
-
-    # def spare
-    #     @spare || false
-    # end
+    private
 
     def current_frame
         if frames.empty? || frames.last.is_over?
