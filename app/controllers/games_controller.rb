@@ -8,11 +8,16 @@ class GamesController < ApplicationController
     end
 
     def create
-
+        @game = Game.new(game_params)
+        if @game.save
+            render json: @game, status: :created, location: @game
+        else
+            render json: game.errors, status: :unprocessable_entity
+        end
     end
 
     def show
-        
+        render json: @game
     end
 
     private
