@@ -17,7 +17,11 @@ class GamesController < ApplicationController
     end
 
     def show
-        render json: @game
+        @game_with_frames = {
+            game: @game,
+            frames: @game.frames.order('id asc')
+        }
+        render json: @game_with_frames
     end
 
     private
