@@ -1,0 +1,5 @@
+class AddIsOverToGames < ActiveRecord::Migration[5.2]
+  def change
+    add_column :games, :is_over, :boolean, default: false
+  end
+end
