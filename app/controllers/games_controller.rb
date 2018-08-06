@@ -20,6 +20,7 @@ class GamesController < ApplicationController
     def throw_ball
         @game = Game.find(params[:id])
         @game.throw_ball(params[:pins].to_i)
+        @game.update(final_score: @game.score)
         render json: {ok: "ok"}
     end
 
