@@ -2,14 +2,14 @@
 #
 # Table name: frames
 #
-#  id          :bigint(8)        not null, primary key
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  game_id     :bigint(8)
-#  first_roll  :integer          default(0)
-#  second_roll :integer          default(0)
-#  bonus       :integer          default(0)
-#  tracker     :integer          default(0)
+#  id            :bigint(8)        not null, primary key
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  game_id       :bigint(8)
+#  first_roll    :integer          default(0)
+#  second_roll   :integer          default(0)
+#  bonus         :integer          default(0)
+#  frame_tracker :integer
 #
 
 class Frame < ApplicationRecord
@@ -19,16 +19,21 @@ class Frame < ApplicationRecord
     
     def pins_down(pins)
         
-        if tracker == 0
+        if self.frame_tracker == 0
             self.update(first_roll: pins)
-        elsif tracker == 1
+        elsif self.frame_tracker == 1
             self.update(second_roll: pins)
         end
-        self.update(tracker: tracker+1)
+        set_tracker
+    end
+
+    def set_tracker
+        update_tracker = self.frame_tracker+1
+        self.update(frame_tracker: update_tracker)
     end
 
     def is_over?
-        tracker >= 2 || first_roll == 10
+        self.frame_tracker >= 2 || self.first_roll == 10
     end
     
     def frame_score

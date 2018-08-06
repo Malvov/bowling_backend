@@ -16,6 +16,13 @@ class GamesController < ApplicationController
         end
     end
 
+
+    def throw_ball
+        @game = Game.find(params[:id])
+        @game.throw_ball(params[:pins].to_i)
+        render json: {ok: "ok"}
+    end
+
     def show
         @game_with_frames = {
             game: @game,
