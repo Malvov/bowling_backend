@@ -24,7 +24,7 @@ class Game < ApplicationRecord
         frame.pins_down(pins)
         
 
-        if @strike && frame.is_over? && @frame_counter < 10 #things get pretty weird in the tenth
+        if @strike && frame.is_over? && @frame < 10 #things get pretty weird in the tenth
             prev_frame.update(bonus: frame.frame_score + prev_frame_bonus)
             @strike = false
         end
@@ -33,7 +33,7 @@ class Game < ApplicationRecord
             @strike = true
         end
 
-        if @spare && !@strike && @frame_counter < 10
+        if @spare && !@strike && @frame_counter  < 10
             @spare = false
             prev_frame.update(bonus: pins) unless prev_frame.nil?
         end
@@ -42,8 +42,6 @@ class Game < ApplicationRecord
         if (frame.second_roll <= 10 && (frame.first_roll != 0 && frame.second_roll != 0) ) && frame.is_over? && self.frames.count < 10
             @spare = true
         end
-        
-        self.update(final_score: score)
         
         @frame_counter = frames.count
                 

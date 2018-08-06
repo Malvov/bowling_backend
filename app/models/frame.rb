@@ -37,7 +37,7 @@ class Frame < ApplicationRecord
     end
     
     def frame_score
-        first_roll + second_roll + bonus
+        self.first_roll + self.second_roll + self.bonus
     end
 
     def frame_score_without_bonus
